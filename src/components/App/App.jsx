@@ -25,9 +25,11 @@ export function App() {
       return
     }
     fetchImg(query, page).then(data => {
-      setItems([...data.hits])
-      setTotalHits(data.totalHits)
+      setLoading(true);
+      setItems([...data.hits]);
+      setTotalHits(data.totalHits);
     }).catch(error => { console.log(error) })
+      .finally(()=>setLoading(false))
 },[page,query])
 
   const onSubmit = value => {
