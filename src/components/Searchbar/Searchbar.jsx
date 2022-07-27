@@ -1,31 +1,30 @@
-import React, { Component } from 'react';
+import  { useState} from 'react';
 import PropTypes from 'prop-types';
 import { Header, Form, Btn, Input } from './Searchbar.styled';
 import { FiSearch } from 'react-icons/fi';
 
-export default class Searchbar extends Component {
-  state = {
-    value: '',
+export default function Searchbar( {onSubmit}) {
+  const[value,setValue]=useState('')
+
+  const handleChange = e => {
+    setValue( e.target.value );
   };
-  handleChange = e => {
-    this.setState({ value: e.target.value });
-  };
-  handleSabmit = e => {
+  const handleSabmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state.value);
-    this.setState({ value: '' });
+   onSubmit(value);
+    setValue( '' );
   };
-  render() {
+
     return (
       <Header>
-        <Form onSubmit={this.handleSabmit}>
+        <Form onSubmit={handleSabmit}>
           <Btn type="submit">
             <FiSearch />
           </Btn>
 
           <Input
-            onChange={this.handleChange}
-            value={this.state.value}
+            onChange={handleChange}
+            value={value}
             type="text"
             autocomplete="off"
             autoFocus
@@ -35,7 +34,7 @@ export default class Searchbar extends Component {
       </Header>
     );
   }
-}
+
 Searchbar.propType = {
   onSubmit: PropTypes.func.isRequired,
 };

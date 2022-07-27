@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import  {useState,useEffect } from 'react';
 import Searchbar from '../Searchbar/Searchbar';
 import {Container}from'./App.styled'
 import fetchImg from 'service/apiSersice';
@@ -9,46 +9,39 @@ import  Modal  from '../Modal/Modal';
 import Message from '../Message/Message';
 
 
-export class App extends Component {
-  state = {
-    query: '',
-    page: 1,
-    totalHits: null,
-    items: [],
-    loading: false,
-    showModal: false,
-    largeImageURL:null,
-  };
-  async componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
-    ) {
-      try {
-        this.setState({ loading: true });
-        const data = await fetchImg(this.state.query, this.state.page);
-        this.setState(prevState => ({
-          items: [...prevState.items, ...data.hits],
-          totalHits: data.totalHits,
-        }));
-      } catch (error) {
-      } finally {
-        this.setState({ loading: false });
-      }
-    }
-  }
+export function App() {
+  const[query, setQuery]=useState('')
+  const[page,setPage]=useState(1)
+  const [totalHits, setTotalHits] = useState(null)
+  const[items,setItems]=useState([])
+  const[loading,setLoading]=useState(false)
+  const[showModal,setShowModal]=useState(false)
+  const[largeImageURL,setlargeImageURL]=useState(null)
 
-  onSubmit = value => {
+
+  useEffect(() => {
+    console.log('use');
+    if (query === '') {
+      return
+    }
+    fetchImg(query, page).then(data => {
+      setItems([...data.hits])
+      setTotalHits(data.totalHits)
+    }).catch(error => { console.log(error) })
+},[page,query])
+
+  const onSubmit = value => {
     if (value.trim() === '') {
       return
     }
-    this.setState({ query: value, page: 1, items: [] });
+    setQuery(value);
+    setPage(1);
+    setItems([])
   };
-  handlerBtnLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+  const handlerBtnLoadMore = () => {
+    setPage(page+1)
   };
-  showBtnLoadMore = () => {
-    const{loading,items,totalHits}=this.state
+  const showBtnLoadMore = () => {
     if (loading) {
       return false
     }
@@ -59,30 +52,27 @@ export class App extends Component {
       return true
     }
   }
-    toggleModal = () => {
-    this.setState(({showModal,largeImageURL})=> ({
-      showModal: !showModal,
-      largeImageURL:null,
-    }))
+    const toggleModal = () => {
+      setShowModal(!showModal)
+      setlargeImageURL(null)
   }
 
-  setlargeImageURL = (url) => {
-    this.setState({ largeImageURL: url })
+  const setImageURL = (url) => {
+    setlargeImageURL(url)
   }
-  render() {
-const{totalHits,items,loading,largeImageURL,query}=this.state
+
     return (
       <Container>
-        <Searchbar onSubmit={this.onSubmit} />
-        {totalHits === 0?<Message/>:<ImageGallery images={items} setUrl={this.setlargeImageURL} />}
+        <Searchbar onSubmit={onSubmit} />
+        {totalHits === 0?<Message/>:<ImageGallery images={items} setUrl={setImageURL} />}
         {<Loader visible={loading} />}
-        {this.showBtnLoadMore()&& (
-          <Button onClick={this.handlerBtnLoadMore} />
+        {showBtnLoadMore()&& (
+          <Button onClick={handlerBtnLoadMore} />
         )}
-        {largeImageURL && <Modal onClose={this.toggleModal}><img src={largeImageURL} alt={query} /></Modal>}
+        {largeImageURL && <Modal onClose={toggleModal}><img src={largeImageURL} alt={query} /></Modal>}
       </Container>
     );
-  }
+
 }
 
 
