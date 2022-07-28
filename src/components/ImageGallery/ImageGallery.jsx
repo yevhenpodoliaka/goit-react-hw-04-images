@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { Gallery } from './ImageGallery.styled';
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 
-export default function ImageGallery({ images, setUrl }) {
+export default function ImageGallery({ images, setImageURL }) {
   return (
     <Gallery>
       {images.map(({ id, webformatURL, largeImageURL, tags }) => (
@@ -11,7 +11,7 @@ export default function ImageGallery({ images, setUrl }) {
           webformatURL={webformatURL}
           largeImageURL={largeImageURL}
           tags={tags}
-          setUrl={setUrl}
+          setImageURL={setImageURL}
         />
       ))}
     </Gallery>
@@ -26,5 +26,5 @@ ImageGallery.propTypes = {
       tags: PropTypes.string.isRequired,
     })
   ),
-  setUrl: PropTypes.func.isRequired,
+  setImageURL: PropTypes.func.isRequired,
 };

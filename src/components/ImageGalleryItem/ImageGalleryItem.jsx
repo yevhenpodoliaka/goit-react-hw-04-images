@@ -2,19 +2,17 @@ import PropTypes from 'prop-types';
 import { GalleryItem, GalleryItemImg } from './ImageGalleryItem.styled';
 
 export default function ImageGalleryItem({
-  largeImageURL,
   webformatURL,
+  largeImageURL,
   tags,
-  setUrl,
+  setImageURL,
 }) {
   return (
     <GalleryItem>
       <GalleryItemImg
         src={webformatURL}
         alt={tags}
-        onClick={() => {
-          setUrl(largeImageURL);
-        }}
+        onClick={()=>{setImageURL(largeImageURL)}}
       />
     </GalleryItem>
   );
@@ -24,4 +22,5 @@ ImageGalleryItem.proptype = {
   webformatURL: PropTypes.string.isRequired,
   tags: PropTypes.string.isRequired,
   setUrl: PropTypes.func.isRequired,
+  setImageURL: PropTypes.func.isRequired,
 };

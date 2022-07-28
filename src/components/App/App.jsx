@@ -15,18 +15,15 @@ export function App() {
   const [totalHits, setTotalHits] = useState(null)
   const[items,setItems]=useState([])
   const[loading,setLoading]=useState(false)
-  const[showModal,setShowModal]=useState(false)
   const[largeImageURL,setlargeImageURL]=useState(null)
 
-
   useEffect(() => {
-    console.log('use');
     if (query === '') {
       return
     }
     fetchImg(query, page).then(data => {
       setLoading(true);
-      setItems([...data.hits]);
+      setItems((prevState) => {return [...prevState,...data.hits]});
       setTotalHits(data.totalHits);
     }).catch(error => { console.log(error) })
       .finally(()=>setLoading(false))
@@ -54,8 +51,7 @@ export function App() {
       return true
     }
   }
-    const toggleModal = () => {
-      setShowModal(!showModal)
+    const closeModal = () => {
       setlargeImageURL(null)
   }
 
@@ -66,12 +62,12 @@ export function App() {
     return (
       <Container>
         <Searchbar onSubmit={onSubmit} />
-        {totalHits === 0?<Message/>:<ImageGallery images={items} setUrl={setImageURL} />}
+        {totalHits === 0?<Message/>:<ImageGallery images={items} setImageURL={setImageURL} />}
         {<Loader visible={loading} />}
         {showBtnLoadMore()&& (
           <Button onClick={handlerBtnLoadMore} />
         )}
-        {largeImageURL && <Modal onClose={toggleModal}><img src={largeImageURL} alt={query} /></Modal>}
+        {largeImageURL && <Modal onClose={closeModal}><img src={largeImageURL} alt={query} /></Modal>}
       </Container>
     );
 
