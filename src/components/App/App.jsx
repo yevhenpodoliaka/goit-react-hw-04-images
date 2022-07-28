@@ -25,9 +25,7 @@ export function App() {
     
     fetchImg(query, page)
       .then(data => {
-        setItems(prevState => {
-          return [...prevState, ...data.hits];
-        });
+        setItems(prevState =>[...prevState, ...data.hits]);
         setTotalHits(data.totalHits);
       })
       .catch(error => {
@@ -45,7 +43,7 @@ export function App() {
     setItems([]);
   };
   const handlerBtnLoadMore = () => {
-    setPage(page + 1);
+    setPage(prevPage=>prevPage + 1);
   };
   const showBtnLoadMore = () => {
     if (loading) {
